@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { IoMenu, IoCloseSharp } from "react-icons/io5";
 const Header = () => {
-    const [isSticky, setSticky] = useState(false);
-    const [menuOpen,setMenuOpen] = useState(false)
+  const location = useLocation();
+  const [isSticky, setSticky] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -42,16 +43,41 @@ const Header = () => {
         </form>
         <ul className="hidden items-center justify-center gap-4 md:flex">
           <Link to="/">
-            <li className="uppercase text-lg  text-gray-600">Home</li>
+            <li
+              className={`uppercase text-lg   ${
+                location.pathname === "/"
+                  ? "text-white bg-megenta px-3 rounded"
+                  : "text-gray-600 bg-transparent px-3"
+              }`}
+            >
+              Home
+            </li>
           </Link>
           <Link to="/about">
-            <li className="uppercase text-lg  text-gray-600">About</li>
+            <li
+              className={`uppercase text-lg   ${
+                location.pathname === "/about"
+                  ? "text-white bg-megenta px-3 rounded"
+                  : "text-gray-600 bg-transparent px-3"
+              }`}
+            >
+              About
+            </li>
           </Link>
           <Link to="/signin">
-            <li className="uppercase text-lg  text-gray-600">Signin</li>
+            <li
+              className={`uppercase text-lg   ${
+                location.pathname === "/signin"
+                  ? "text-white bg-megenta px-3 rounded"
+                  : "text-gray-600 bg-transparent px-3"
+              }`}
+            >
+              Signin
+            </li>
           </Link>
         </ul>
 
+        {/* mobile menu  */}
         <div
           className={`absolute md:hidden block transition-all duration-700 ease-in-out -z-10 top-14 space-y-8 w-full bg-black/60 p-4 ${
             menuOpen ? " opacity-100 visible" : " opacity-0 invisible"
@@ -59,13 +85,37 @@ const Header = () => {
         >
           <ul className="md:hidden flex flex-col gap-8  w-full">
             <Link to="/" className="w-full ">
-              <li className="uppercase text-lg text-white ">Home</li>
+              <li
+                className={`uppercase text-lg  ${
+                  location.pathname === "/"
+                    ? "text-white bg-megenta px-4 py-1 rounded-md"
+                    : "text-white px-4 py-1"
+                }`}
+              >
+                Home
+              </li>
             </Link>
             <Link to="/about" className="w-full ">
-              <li className="uppercase text-lg text-white">About</li>
+              <li
+                className={`uppercase text-lg  ${
+                  location.pathname === "/about"
+                    ? "text-white bg-megenta px-4 py-1 rounded-md"
+                    : "text-white px-4 py-1"
+                }`}
+              >
+                About
+              </li>
             </Link>
             <Link to="/signin" className="w-full ">
-              <li className="uppercase text-lg text-white">Signin</li>
+              <li
+                className={`uppercase text-lg  ${
+                  location.pathname === "/signin"
+                    ? "text-white bg-megenta px-4 py-1 rounded-md"
+                    : "text-white px-4  py-1"
+                }`}
+              >
+                Signin
+              </li>
             </Link>
           </ul>
           <form className="border border-white rounded p-2 flex items-center justify-between md:hidden ">
@@ -79,6 +129,7 @@ const Header = () => {
         </div>
       </div>
 
+      {/* mobile menu handler  */}
       <div className="absolute right-5 top-5 md:hidden block">
         {menuOpen ? (
           <button onClick={() => setMenuOpen(false)}>
