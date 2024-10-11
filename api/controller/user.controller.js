@@ -1,4 +1,7 @@
-export const register = async (req, res) => {
+
+
+
+export const getUsers = async (req, res) => {
   try {
     return res.status(200).json({
       message:"works fine!",
