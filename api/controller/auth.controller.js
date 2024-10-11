@@ -2,8 +2,9 @@ import User from '../models/user.model.js'
 import validator from 'validator'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { errorHandler } from '../utils/error.js';
 
-export const Signup = async (req, res) => {
+export const Signup = async (req, res,next) => {
   const { username, email, password } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -44,15 +45,11 @@ export const Signup = async (req, res) => {
       error: false,
     });
   } catch (err) {
-    return res.status(400).json({
-      message: err.message || err,
-      success: false,
-      error: true,
-    });
+   next(errorHandler(500,err.message));
   }
 };
 
-export const Signin = async (req, res) => {
+export const Signin = async (req, res,next) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -86,11 +83,7 @@ export const Signin = async (req, res) => {
       data: { email: user.email, username: user.username },
     });
   } catch (err) {
-    return res.status(400).json({
-      message: err.message || err,
-      success: false,
-      error: true,
-    });
+   next(errorHandler(500, err.message));
   }
 };
 
@@ -101,10 +94,6 @@ export const Signout = async (req, res) => {
       .status(200)
       .json({ success: true, error: false, message: "Logout Successfully" });
   } catch (err) {
-    res.status(400).json({
-      message: err.message || err,
-      success: false,
-      error: true,
-    });
+    next(errorHandler(500, err.message));
   }
 };
