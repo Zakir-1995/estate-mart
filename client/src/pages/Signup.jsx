@@ -6,43 +6,42 @@ const Signup = () => {
   const navigate = useNavigate();
   const [openEye, setOpenEye] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const registerInfo = Object.fromEntries(formData);
+    console.log(registerInfo);
+    try {
+      setLoading(true);
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const registerInfo = Object.fromEntries(formData);
-      console.log(registerInfo)
-      try {
-        setLoading(true);
-        const res = await fetch(
-          `http://localhost:8080/api/auth/signup`, {
-            method: "POST",
-            credentials:"include",
-            headers: {
-              "Content-Type":"application/json"
-            },
-            body:JSON.stringify(registerInfo)
-          }
-        );
-        setLoading(false);
+      const res = await fetch(`http://localhost:8080/api/auth/signup`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(registerInfo),
+      });
+      setLoading(false);
+      setError(null);
+      const fetchData = await res.json();
 
-        const fetchData= await res.json()
-
-        if (fetchData.success) {
-          toast.success(fetchData.message);
-          e.target.reset();
-          navigate("/signin");
-        }
-
-        if (fetchData.error) {
-          toast.error(fetchData.message);
-        }
-      } catch (err) {
-        toast.error(err.message);
+      if (fetchData.success) {
+        toast.success(fetchData.message);
+        e.target.reset();
+        navigate("/signin");
       }
+
+      if (fetchData.error) {
+        setError(fetchData.message);
+      }
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
-  
+
   return (
     <div className="mt-20 max-w-6xl mx-auto flex flex-col  px-5 justify-center h-fit py-10">
       <h3 className="text-3xl font-medium text-gray-800 py-5 text-center">
@@ -90,6 +89,13 @@ const Signup = () => {
           {loading ? <p>Loading...</p> : "Submit"}
         </button>
       </form>
+
+      {error && (
+        <div className="sm:max-w-[40%] w-full mx-auto mt-5 bg-megenta/80 rounded-md py-2 px-3">
+          <span className="  text-white   w-full">{error}</span>
+        </div>
+      )}
+
       <div className="sm:max-w-[40%] w-full mx-auto my-5">
         <p className="text-sm font-medium text-gray-600 ">
           Already have an account?
@@ -102,6 +108,6 @@ const Signup = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Signup
+export default Signup;

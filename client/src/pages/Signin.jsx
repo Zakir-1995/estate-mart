@@ -6,6 +6,7 @@ const Signin = () => {
   const navigate = useNavigate();
   const [openEye, setOpenEye] = useState(false);
   const [loading, setLoading] = useState(false);
+   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +23,7 @@ const Signin = () => {
         body: JSON.stringify(signinInfo),
       });
       setLoading(false);
-
+     setError(null);
       const fetchData = await res.json();
 
       if (fetchData.success) {
@@ -32,7 +33,7 @@ const Signin = () => {
       }
 
       if (fetchData.error) {
-        toast.error(fetchData.message);
+       setError(fetchData.message);
       }
     } catch (err) {
       toast.error(err.message);
@@ -80,9 +81,14 @@ const Signin = () => {
           {loading ? <p>Loading...</p> : "Submit"}
         </button>
       </form>
+      {error && (
+        <div className="sm:max-w-[40%] w-full mx-auto mt-5 bg-megenta/80 rounded-md py-2 px-3">
+          <span className="  text-white   w-full">{error}</span>
+        </div>
+      )}
       <div className="sm:max-w-[40%] w-full mx-auto my-5">
         <p className="text-sm font-medium text-gray-600 ">
-          Don{ "'"}t have an account?
+          Don{"'"}t have an account?
           <Link to="/signup">
             <span className="text-blue hover:underline pl-1 font-semibold">
               Signup
