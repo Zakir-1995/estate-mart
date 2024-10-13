@@ -1,10 +1,10 @@
-import User from '../models/user.model.js'
-import validator from 'validator'
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
-import { errorHandler } from '../utils/error.js';
+import User from "../models/user.model.js";
+import validator from "validator";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { errorHandler } from "../utils/error.js";
 
-export const Signup = async (req, res,next) => {
+export const Signup = async (req, res, next) => {
   const { username, email, password } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -45,11 +45,11 @@ export const Signup = async (req, res,next) => {
       error: false,
     });
   } catch (err) {
-   next(errorHandler(500,err.message));
+    next(errorHandler(500, err.message));
   }
 };
 
-export const Signin = async (req, res,next) => {
+export const Signin = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -69,7 +69,7 @@ export const Signin = async (req, res,next) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: age,
     });
-
+    const { password: hashedPassword, ...rest } = user._doc;
     const tokenOption = {
       httpOnly: true,
       // secure: true,
@@ -80,10 +80,66 @@ export const Signin = async (req, res,next) => {
       success: true,
       error: false,
       message: "user login successfully!",
-      data: { email: user.email, username: user.username },
+      data: rest,
     });
   } catch (err) {
-   next(errorHandler(500, err.message));
+    next(errorHandler(500, err.message));
+  }
+};
+
+export const googleSignin = async (req, res, next) => {
+  const { username, email, avatar } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      const generatedPassword =
+      Math.random().toString(36).slice(-8) +
+      Math.random().toString(36).slice(-8);
+      const hashedPassword =await bcrypt.hash(generatedPassword, 10);
+      const newUser = new User({
+        username:
+          username.split(" ").join("").toLowerCase() +
+          Math.random().toString(36).slice(-4),
+        email: email,
+        password: hashedPassword,
+        avatar: avatar,
+      });
+
+      await newUser.save();
+
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY, {
+        expiresIn: age,
+      });
+      const { password: pass, ...rest } = newUser._doc;
+      res.cookie("token", token, tokenOption).json({
+        success: true,
+        error: false,
+        message: "user login successfully!",
+        data: rest,
+      });
+    } else {
+       const { password: pass, ...rest } = user._doc;
+       const age = 1000 * 60 * 60 * 24 * 7;
+       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
+         expiresIn: age,
+       });
+       const tokenOption = {
+         httpOnly: true,
+         // secure: true,
+         maxAge: age,
+       };
+
+       return res.cookie("token", token, tokenOption).json({
+         success: true,
+         error: false,
+         message: "user login successfully!",
+         data: rest,
+       });
+    }
+
+  } catch (err) {
+    next(err);
   }
 };
 

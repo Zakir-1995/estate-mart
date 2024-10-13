@@ -2,18 +2,22 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { RiEyeCloseFill, RiEyeLine } from "react-icons/ri";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { signinStart, signinSuccess, signinFailure } from "../redux/userSlice";
+import Oauth from "../components/Oauth";
 const Signin = () => {
   const navigate = useNavigate();
   const [openEye, setOpenEye] = useState(false);
-  const [loading, setLoading] = useState(false);
-   const [error, setError] = useState(null);
+  const { loading, error } = useSelector((state) => state.user)
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const signinInfo = Object.fromEntries(formData);
     try {
-      setLoading(true);
+
+      dispatch(signinStart());
       const res = await fetch(`http://localhost:8080/api/auth/signin`, {
         method: "POST",
         credentials: "include",
@@ -22,18 +26,18 @@ const Signin = () => {
         },
         body: JSON.stringify(signinInfo),
       });
-      setLoading(false);
-     setError(null);
+
       const fetchData = await res.json();
 
       if (fetchData.success) {
+        dispatch(signinSuccess(fetchData.data));
         toast.success(fetchData.message);
         e.target.reset();
         navigate("/");
       }
 
       if (fetchData.error) {
-       setError(fetchData.message);
+        dispatch(signinFailure(fetchData.message));
       }
     } catch (err) {
       toast.error(err.message);
@@ -43,8 +47,15 @@ const Signin = () => {
   return (
     <div className="mt-20 max-w-6xl mx-auto flex flex-col  px-5 justify-center h-fit py-10">
       <h3 className="text-3xl font-medium text-gray-800 py-5 text-center">
-        Sign in
+        Welcome Back!
       </h3>
+      <div className="w-full mx-auto flex justify-center mb-5">
+        <img
+          src="/EstateMart.png"
+          alt="logo"
+          className="w-[100px]  object-cover"
+        />
+      </div>
       <form
         className="w-full flex flex-col items-center gap-5"
         onSubmit={handleSubmit}
@@ -81,6 +92,9 @@ const Signin = () => {
           {loading ? <p>Loading...</p> : "Submit"}
         </button>
       </form>
+      <div className="w-full mx-auto flex justify-center my-5">
+        <Oauth />
+      </div>
       {error && (
         <div className="sm:max-w-[40%] w-full mx-auto mt-5 bg-megenta/80 rounded-md py-2 px-3">
           <span className="  text-white   w-full">{error}</span>
