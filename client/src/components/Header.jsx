@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Link, useLocation } from "react-router-dom";
 import { IoMenu, IoCloseSharp } from "react-icons/io5";
+import {useSelector} from "react-redux"
 const Header = () => {
+  const { currentUser } = useSelector((state) => state.user)
+  console.log(currentUser)
   const location = useLocation();
   const [isSticky, setSticky] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -64,16 +67,19 @@ const Header = () => {
               About
             </li>
           </Link>
-          <Link to="/signin">
-            <li
-              className={`uppercase text-lg   ${
+          <Link to={`${currentUser?"/profile":"/signin"}`}>
+            {currentUser ? (
+              <img src={currentUser.avatar} alt={ currentUser.username} className="w-8 h-8 rounded-full object-cover" />
+            ):<> <li
+              className={`uppercase text-lg ${
                 location.pathname === "/signin"
                   ? "text-white bg-megenta px-3 rounded"
                   : "text-gray-600 bg-transparent px-3"
               }`}
             >
               Signin
-            </li>
+            </li></>}
+           
           </Link>
         </ul>
 

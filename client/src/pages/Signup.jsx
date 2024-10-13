@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { RiEyeCloseFill, RiEyeLine } from "react-icons/ri";
 import toast from "react-hot-toast";
 import Oauth from "../components/Oauth";
+import { useSelector } from "react-redux";
 const Signup = () => {
   const navigate = useNavigate();
   const [openEye, setOpenEye] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const { currentUser } = useSelector((state) => state.user);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -42,6 +43,13 @@ const Signup = () => {
       toast.error(err.message);
     }
   };
+
+  
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/");
+    }
+  }, [currentUser, navigate]);
 
   return (
     <div className="mt-20 max-w-6xl mx-auto flex flex-col  px-5 justify-center h-fit py-10">
