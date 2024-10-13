@@ -5,7 +5,6 @@ import { IoMenu, IoCloseSharp } from "react-icons/io5";
 import {useSelector} from "react-redux"
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user)
-  console.log(currentUser)
   const location = useLocation();
   const [isSticky, setSticky] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -44,44 +43,54 @@ const Header = () => {
           />
           <CiSearch size={22} className="text-gray-600" />
         </form>
-        <ul className="hidden items-center justify-center gap-4 md:flex">
-          <Link to="/">
-            <li
-              className={`uppercase text-lg   ${
-                location.pathname === "/"
-                  ? "text-white bg-megenta px-3 rounded"
-                  : "text-gray-600 bg-transparent px-3"
-              }`}
-            >
-              Home
-            </li>
-          </Link>
-          <Link to="/about">
-            <li
-              className={`uppercase text-lg   ${
-                location.pathname === "/about"
-                  ? "text-white bg-megenta px-3 rounded"
-                  : "text-gray-600 bg-transparent px-3"
-              }`}
-            >
-              About
-            </li>
-          </Link>
-          <Link to={`${currentUser?"/profile":"/signin"}`}>
+        <div className="flex items-center gap-5">
+          <ul className="hidden items-center justify-center gap-4 md:flex">
+            <Link to="/">
+              <li
+                className={`uppercase text-lg   ${
+                  location.pathname === "/"
+                    ? "text-white bg-megenta px-3 rounded"
+                    : "text-gray-600 bg-transparent px-3"
+                }`}
+              >
+                Home
+              </li>
+            </Link>
+            <Link to="/about">
+              <li
+                className={`uppercase text-lg   ${
+                  location.pathname === "/about"
+                    ? "text-white bg-megenta px-3 rounded"
+                    : "text-gray-600 bg-transparent px-3"
+                }`}
+              >
+                About
+              </li>
+            </Link>
+          </ul>
+          <Link to={`${currentUser ? "/profile" : "/signin"}`}>
             {currentUser ? (
-              <img src={currentUser.avatar} alt={ currentUser.username} className="w-8 h-8 rounded-full object-cover" />
-            ):<> <li
-              className={`uppercase text-lg ${
-                location.pathname === "/signin"
-                  ? "text-white bg-megenta px-3 rounded"
-                  : "text-gray-600 bg-transparent px-3"
-              }`}
-            >
-              Signin
-            </li></>}
-           
+              <img
+                src={currentUser.avatar}
+                alt={currentUser.username}
+                className="w-8 h-8 rounded-full object-cover"
+              />
+            ) : (
+              <>
+                {" "}
+                <span
+                  className={`uppercase text-lg ${
+                    location.pathname === "/signin"
+                      ? "text-white bg-megenta px-3 py-1 rounded"
+                      : "text-gray-600 bg-transparent px-3 py-1"
+                  }`}
+                >
+                  Signin
+                </span>
+              </>
+            )}
           </Link>
-        </ul>
+        </div>
 
         {/* mobile menu  */}
         <div
@@ -112,17 +121,6 @@ const Header = () => {
                 About
               </li>
             </Link>
-            <Link to="/signin" className="w-full ">
-              <li
-                className={`uppercase text-lg  ${
-                  location.pathname === "/signin"
-                    ? "text-white bg-megenta px-4 py-1 rounded-md"
-                    : "text-white px-4  py-1"
-                }`}
-              >
-                Signin
-              </li>
-            </Link>
           </ul>
           <form className="border border-white rounded p-2 flex items-center justify-between md:hidden ">
             <input
@@ -136,7 +134,7 @@ const Header = () => {
       </div>
 
       {/* mobile menu handler  */}
-      <div className="absolute right-5 top-5 md:hidden block">
+      <div className="absolute right-16 top-5 md:hidden block">
         {menuOpen ? (
           <button onClick={() => setMenuOpen(false)}>
             <IoCloseSharp size={22} />
