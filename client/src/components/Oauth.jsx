@@ -2,13 +2,11 @@ import { FaGoogle } from "react-icons/fa6";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { app } from "../firebase.js";
 import { useDispatch } from "react-redux";
-import {
-  signinSuccess,
-} from "../redux/userSlice.js";
+import { signinSuccess } from "../redux/userSlice.js";
 import toast from "react-hot-toast";
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 const Oauth = () => {
-  const navigate =useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleGoogleClick = async () => {
     try {
@@ -17,7 +15,7 @@ const Oauth = () => {
       const res = await signInWithPopup(auth, provider);
       const response = await fetch("http://localhost:8080/api/auth/google", {
         method: "POST",
-        credentials:"include",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -28,6 +26,7 @@ const Oauth = () => {
         }),
       });
       const data = await response.json();
+      console.log(data.data);
       if (data.success) {
         dispatch(signinSuccess(data.data));
         toast.success(data.message);

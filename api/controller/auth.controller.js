@@ -91,16 +91,32 @@ export const googleSignin = async (req, res, next) => {
   const { username, email, avatar } = req.body;
   try {
     const user = await User.findOne({ email });
-    
-    if (!user) {
+
+    if (user) {
+      const { password: pass, ...rest } = user._doc;
+      const age = 1000 * 60 * 60 * 24 * 7;
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
+        expiresIn: age,
+      });
+      const tokenOption = {
+        httpOnly: true,
+        // secure: true,
+        maxAge: age,
+      };
+
+      return res.cookie("token", token, tokenOption).json({
+        success: true,
+        error: false,
+        message: "user login successfully!",
+        data: rest,
+      });
+    } else {
       const generatedPassword =
-      Math.random().toString(36).slice(-8) +
-      Math.random().toString(36).slice(-8);
-      const hashedPassword =await bcrypt.hash(generatedPassword, 10);
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      const hashedPassword = await bcrypt.hash(generatedPassword, 10);
       const newUser = new User({
-        username:
-          username.split(" ").join("").toLowerCase() +
-          Math.random().toString(36).slice(-4),
+        username: username,
         email: email,
         password: hashedPassword,
         avatar: avatar,
@@ -108,48 +124,27 @@ export const googleSignin = async (req, res, next) => {
 
       await newUser.save();
 
+        const age = 1000 * 60 * 60 * 24 * 7;
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: age,
       });
-      const { password: pass, ...rest } = newUser._doc;
+
+           const tokenOption = {
+             httpOnly: true,
+             // secure: true,
+             maxAge: age,
+      }; 
+      
       res.cookie("token", token, tokenOption).json({
         success: true,
         error: false,
         message: "user login successfully!",
-        data: rest,
+        data: newUser,
       });
-    } else {
-       const { password: pass, ...rest } = user._doc;
-       const age = 1000 * 60 * 60 * 24 * 7;
-       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
-         expiresIn: age,
-       });
-       const tokenOption = {
-         httpOnly: true,
-         // secure: true,
-         maxAge: age,
-       };
-
-       return res.cookie("token", token, tokenOption).json({
-         success: true,
-         error: false,
-         message: "user login successfully!",
-         data: rest,
-       });
     }
-
   } catch (err) {
     next(err);
   }
 };
 
-export const Signout = async (req, res) => {
-  try {
-    return res
-      .clearCookie("token")
-      .status(200)
-      .json({ success: true, error: false, message: "Logout Successfully" });
-  } catch (err) {
-    next(errorHandler(500, err.message));
-  }
-};
+

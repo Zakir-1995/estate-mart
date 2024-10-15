@@ -134,7 +134,7 @@ const Header = () => {
       </div>
 
       {/* mobile menu handler  */}
-      <div className="absolute right-16 top-5 md:hidden block">
+      <div className="absolute right-[84px] top-5 md:hidden block">
         {menuOpen ? (
           <button onClick={() => setMenuOpen(false)}>
             <IoCloseSharp size={22} />

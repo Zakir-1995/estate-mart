@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { RiEyeCloseFill, RiEyeLine } from "react-icons/ri";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getDownloadURL,
   getStorage,
@@ -8,24 +8,46 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-// firbase storage
+import { toast } from "react-hot-toast";
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+  deleteUserSuccess,
+  deleteUserFailure,
+  deleteUserStart,
+  signoutStart,
+  signoutSuccess,
+  signoutFailure
+} from "../redux/userSlice";
 
+// firbase storage
 // allow read;
 // allow write:if
 // request.resource.size < 2 * 1024 *1024 &&
 // request.resource.contentType.matches('image/.*')
 
 const Profile = () => {
+  const dispatch = useDispatch();
   const fileRef = useRef(null);
   const [openEye, setOpenEye] = useState(false);
   const { loading, error, currentUser } = useSelector((state) => state.user);
   const [file, setFile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
   const [uploadError, setUploadError] = useState(false);
-  const [formData, setFormData] = useState({});
-
-  console.log(filePerc);
-  console.log(formData);
+  const [imageData, setImageData] = useState({});
+  const [formData, setFormData] = useState({
+    username:currentUser.username,
+    email: currentUser.email,
+    password: "",
+   
+  });
+  const { username, email, password } = formData
+  
+  const handleChange = (e) => {
+    const {name,value} =e.target
+    setFormData({...formData,[name]:value});
+  };
 
   useEffect(() => {
     const handleFileUpload = (file) => {
@@ -46,7 +68,7 @@ const Profile = () => {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setFormData({ ...formData, avatar: downloadURL });
+            setImageData({ ...imageData, avatar: downloadURL });
           });
         }
       );
@@ -57,6 +79,91 @@ const Profile = () => {
     /* eslint-disable */
   }, [file]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(
+        `http://localhost:8080/api/user/update-user/${currentUser._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            username,
+            email,
+            password,
+            avatar: imageData.avatar,
+          }),
+        }
+      );
+      const fetchData = await res.json();
+      if (fetchData.success) {
+        e.target.reset();
+        dispatch(updateUserSuccess(fetchData.data));
+        toast.success(fetchData.message);
+      }
+
+      if (fetchData.error) {
+        dispatch(updateUserFailure(fetchData.message));
+        toast.error(fetchData.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteUser =async () => {
+    try {
+      alert("are you sure?")
+   dispatch(deleteUserStart());
+      const res = await fetch(`http://localhost:8080/api/user/delete-user/${currentUser._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include"
+        })
+      const fetchData = await res.json()
+      if (fetchData.success) {
+        dispatch(deleteUserSuccess())
+        toast.success(fetchData.message)
+      }
+          if (fetchData.error) {
+            dispatch(deleteUserFailure(fetchData.message));
+            toast.error(fetchData.message);
+          }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+    const handleSignout = async () => {
+      try {
+        dispatch(signoutStart())
+        const res = await fetch(`http://localhost:8080/api/user/signout`, {
+          method: "POST",
+          credentials: "include",
+        });
+        const fetchData = await res.json();
+        if (fetchData.success) {
+          dispatch(signoutSuccess());
+          toast.success(fetchData.message);
+        }
+        if (fetchData.error) {
+          dispatch(signoutFailure(fetchData.message));
+          toast.error(fetchData.message);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+
+
   return (
     <div className="mt-20 max-w-6xl mx-auto flex flex-col  px-5 justify-center h-fit py-5">
       <h3 className="text-3xl font-medium text-gray-800 py-5 text-center">
@@ -65,7 +172,7 @@ const Profile = () => {
 
       <form
         className="w-full flex flex-col items-center gap-5"
-        // onSubmit={handleSubmit}
+        onSubmit={handleSubmit}
       >
         <input
           type="file"
@@ -76,7 +183,7 @@ const Profile = () => {
         />
         <div className="w-full mx-auto flex justify-center">
           <img
-            src={formData.avatar || currentUser?.avatar}
+            src={imageData.avatar || currentUser?.avatar}
             alt={`${currentUser?.username}`}
             className="w-20 h-20 rounded-full  object-cover"
             onClick={() => fileRef.current.click()}
@@ -96,6 +203,8 @@ const Profile = () => {
 
         <input
           type="text"
+          defaultValue={username}
+          onChange={handleChange}
           name="username"
           placeholder="Username"
           className="focus:outline-none bg-white rounded-md py-2 px-3 sm:max-w-[40%] w-full"
@@ -103,12 +212,16 @@ const Profile = () => {
         <input
           type="email"
           name="email"
+          defaultValue={email}
+          onChange={handleChange}
           placeholder="Email"
           className="focus:outline-none bg-white rounded-md py-2 px-3 sm:max-w-[40%] w-full"
         />
         <div className="relative sm:max-w-[40%] w-full">
           <input
+            type={`${openEye ? "text" : "password"}`}
             name="password"
+            onChange={handleChange}
             placeholder="Password"
             className="focus:outline-none bg-white rounded-md py-2 px-3 w-full"
           />
@@ -133,8 +246,15 @@ const Profile = () => {
       </form>
 
       <div className="sm:max-w-[40%] w-full mx-auto mt-5 flex items-center justify-between gap-5 px-5">
-        <button className=" font-medium text-megenta">Delete Account?</button>
-        <button className=" font-medium text-megenta">Sign Out</button>
+        <button
+          onClick={handleDeleteUser}
+          className=" font-medium text-megenta"
+        >
+          Delete Account?
+        </button>
+        <button onClick={handleSignout} className=" font-medium text-megenta">
+          Sign Out
+        </button>
       </div>
 
       {error && (
