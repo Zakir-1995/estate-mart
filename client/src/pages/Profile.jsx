@@ -20,6 +20,7 @@ import {
   signoutSuccess,
   signoutFailure
 } from "../redux/userSlice";
+import {Link} from 'react-router-dom'
 
 // firbase storage
 // allow read;
@@ -244,7 +245,13 @@ const Profile = () => {
           {loading ? <p>Loading...</p> : "Update"}
         </button>
       </form>
-
+      <div className="sm:max-w-[40%] mx-auto  w-full mt-5">
+        <Link to="/create-listing">
+          <button className=" bg-green-700 rounded-md py-2 px-3  w-full text-white hover:opacity-90 transition-all duration-150 ease-in-out disabled:opacity-90">
+            Create Listing
+          </button>
+        </Link>
+      </div>
       <div className="sm:max-w-[40%] w-full mx-auto mt-5 flex items-center justify-between gap-5 px-5">
         <button
           onClick={handleDeleteUser}
