@@ -2,10 +2,10 @@ import { useState } from "react";
 import imageToBase64 from "../helper/imageToBase64";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 
-const CreateListing = () => {
-  const navigate = useNavigate()
+const UpdateListing = () => {
+  const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
   const [listingImage, setListingImage] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -36,7 +36,7 @@ const CreateListing = () => {
       setLoading(true);
       const res = await fetch("http://localhost:8080/api/listing/create", {
         method: "POST",
-        credentials:"include",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -47,7 +47,7 @@ const CreateListing = () => {
             address: inputs.address,
             type: inputs.type,
             regularPrice: inputs.regularPrice,
-            discountPrice: inputs.discountPrice ? inputs.discountPrice :"",
+            discountPrice: inputs.discountPrice ? inputs.discountPrice : "",
             bathroom: inputs.bathroom,
             bedroom: inputs.bedroom,
             offer: inputs.offer ? "true" : "false",
@@ -64,7 +64,7 @@ const CreateListing = () => {
         e.target.reset();
         setListingImage([]);
         toast.success(fetchData.message);
-        navigate(`/listing/${fetchData.data._id}`)
+        navigate(`/listing/${fetchData.data._id}`);
       }
       if (fetchData.error) {
         toast.error(fetchData.message);
@@ -79,8 +79,8 @@ const CreateListing = () => {
   };
 
   const handleOfferChange = () => {
-    setOffer(!offer)
-  }
+    setOffer(!offer);
+  };
   return (
     <div className="mt-20 max-w-6xl mx-auto flex flex-col  px-5 justify-center h-fit my-5">
       <h3 className="text-3xl font-medium text-gray-800 py-5 text-center">
@@ -308,4 +308,4 @@ const CreateListing = () => {
   );
 };
 
-export default CreateListing;
+export default UpdateListing;
