@@ -1,63 +1,108 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import imageToBase64 from "../helper/imageToBase64";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const UpdateListing = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { currentUser } = useSelector((state) => state.user);
-  const [listingImage, setListingImage] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [offer, setOffer] = useState(false);
+  const [listingData, setListingData] = useState({});
+  const [offerValue, setOfferValue] = useState(false);
+  const [parkingValue, setParkingValue] = useState(false);
+  const [furnishedValue, setFurnishedValue] = useState(false);
+  const [listingImage, setListingImage] = useState([]);
+  const [type,setType] = useState("")
+
+  useEffect(() => {
+    setOfferValue(listingData?.offer ? true : false);
+    setFurnishedValue(listingData?.furnished ? true : false);
+    setParkingValue(listingData?.parking ? true : false);
+    setParkingValue(listingData?.parking ? true : false);
+    setParkingValue(listingData?.parking ? true : false);
+    setType(listingData?.type === "sell" ? "sell" : "rent");
+  }, [
+    listingData?.offer,
+    listingData?.furnished,
+    listingData?.parking,
+    listingData?.type,
+  ]);
+
+  useEffect(() => {
+    const getListing = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:8080/api/listing/get-single-listing/${id}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        const fetchData = await res.json();
+        if (fetchData?.success) {
+          setListingData(fetchData?.data);
+        }
+        if (fetchData?.error) {
+          console.log(fetchData?.message);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getListing();
+  }, [id]);
 
   const handleListingImage = async (e) => {
     const files = e.target.files;
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const imagePic = await imageToBase64(file);
-      setListingImage((prev) => [...prev, imagePic]);
+      setListingImage((prev) => [...prev, { url: imagePic }]);
     }
   };
+  useEffect(() => {
+    setListingImage(listingData?.images);
+  }, [listingData.images]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const inputs = Object.fromEntries(formData);
-
+    const updatedInfo = { ...inputs, images: listingImage };
+    console.log(updatedInfo);
     try {
-      if (listingImage.length < 1)
-        return toast.error("must upload at least one image");
-
       if (listingImage.length > 6)
         return toast.error("images must not exceed the limit six");
-      if (inputs.regularPrice < inputs.discountPrice)
+      if (inputs.regularPrice > inputs.discountPrice)
         return toast.error("Discount price must be lower than regular price");
       setLoading(true);
-      const res = await fetch("http://localhost:8080/api/listing/create", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          listingData: {
-            name: inputs.name,
-            description: inputs.description,
-            address: inputs.address,
-            type: inputs.type,
-            regularPrice: inputs.regularPrice,
-            discountPrice: inputs.discountPrice ? inputs.discountPrice : "",
-            bathroom: inputs.bathroom,
-            bedroom: inputs.bedroom,
-            offer: inputs.offer ? "true" : "false",
-            parking: inputs.parking ? "true" : "false",
-            furnished: inputs.furnished ? "true" : "false",
-            images: listingImage,
-            userRef: currentUser._id,
+      const res = await fetch(
+        `http://localhost:8080/api/listing/update-listing/${id}`,
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
           },
-        }),
-      });
+          body: JSON.stringify({
+            data: {
+              name: inputs.name,
+              description: inputs.description,
+              address: inputs.address,
+              type: inputs.type,
+              regularPrice: inputs.regularPrice,
+              discountPrice:offerValue ? inputs.discountPrice: "",
+              bathroom: inputs.bathroom,
+              bedroom: inputs.bedroom,
+              offer: offerValue ? "true" : "false",
+              parking: parkingValue ? "true" : "false",
+              furnished: furnishedValue ? "true" : "false",
+              images: updatedInfo.images,
+              userRef: id,
+            },
+          }),
+        }
+      );
       setLoading(false);
       const fetchData = await res.json();
       if (fetchData.success) {
@@ -78,19 +123,17 @@ const UpdateListing = () => {
     setListingImage(listingImage.filter((_, i) => i !== index));
   };
 
-  const handleOfferChange = () => {
-    setOffer(!offer);
-  };
   return (
     <div className="mt-20 max-w-6xl mx-auto flex flex-col  px-5 justify-center h-fit my-5">
       <h3 className="text-3xl font-medium text-gray-800 py-5 text-center">
-        Create Listing
+        Update Listing
       </h3>
       <form className="w-full grid grid-cols-2 gap-5" onSubmit={handleSubmit}>
         <div className="w-full flex flex-col gap-5">
           <input
             type="text"
             name="name"
+            defaultValue={listingData.name}
             placeholder="Name"
             className="focus:outline-none bg-white rounded-md py-2 px-3  w-full"
             required
@@ -98,6 +141,7 @@ const UpdateListing = () => {
           <textarea
             name="description"
             placeholder="Description"
+            defaultValue={listingData.description}
             className="focus:outline-none bg-white rounded-md py-2 px-3  w-full resize-none"
             required
           />
@@ -105,6 +149,7 @@ const UpdateListing = () => {
             type="text"
             name="address"
             placeholder="Address"
+            defaultValue={listingData.address}
             className="focus:outline-none bg-white rounded-md py-2 px-3  w-full"
             required
           />
@@ -117,6 +162,8 @@ const UpdateListing = () => {
                   value="sell"
                   name="type"
                   className=" text-blue-600  border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  checked={type === "sell"}
+                  onChange={(e) => setType(e.target.value)}
                 />
                 <label
                   htmlFor="sell"
@@ -127,12 +174,13 @@ const UpdateListing = () => {
               </div>
               <div className="flex items-center">
                 <input
-                  defaultChecked
                   id="rent"
                   type="radio"
                   value="rent"
                   name="type"
                   className=" text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  checked={type === "rent"}
+                  onChange={(e) => setType(e.target.value)}
                 />
                 <label
                   htmlFor="rent"
@@ -147,8 +195,10 @@ const UpdateListing = () => {
               <input
                 id="parking"
                 type="checkbox"
-                value="parking"
+                value={parkingValue}
                 name="parking"
+                onChange={() => setParkingValue(!parkingValue)}
+                checked={parkingValue}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
               <label
@@ -162,8 +212,10 @@ const UpdateListing = () => {
               <input
                 id="furnished"
                 type="checkbox"
-                value="furnished"
+                value={furnishedValue}
                 name="furnished"
+                onChange={() => setFurnishedValue(!furnishedValue)}
+                checked={furnishedValue}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
               <label
@@ -175,12 +227,12 @@ const UpdateListing = () => {
             </div>
             <div className="flex items-center mb-4">
               <input
-                onChange={handleOfferChange}
                 id="offer"
                 type="checkbox"
-                value="offer"
+                value={offerValue}
                 name="offer"
-                checked={offer}
+                onChange={() => setOfferValue(!offerValue)}
+                checked={offerValue}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
               <label
@@ -198,15 +250,17 @@ const UpdateListing = () => {
               type="number"
               name="regularPrice"
               placeholder="Regular Price"
+              defaultValue={listingData.regularPrice}
               className="focus:outline-none bg-white rounded-md py-2 px-3  w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               required
             />
-            {offer && (
+            {offerValue && (
               <input
                 min={50}
                 max={100000000}
                 type="number"
                 name="discountPrice"
+                defaultValue={listingData.discountPrice}
                 placeholder="Discount Price"
                 className="focus:outline-none bg-white rounded-md py-2 px-3  w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 required
@@ -219,6 +273,7 @@ const UpdateListing = () => {
               type="number"
               name="bedroom"
               placeholder="Bedroom Number"
+              defaultValue={listingData.bedroom}
               className="focus:outline-none bg-white rounded-md py-2 px-3  w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               required
             />
@@ -227,6 +282,7 @@ const UpdateListing = () => {
               type="number"
               name="bathroom"
               placeholder="Bathroom Number"
+              defaultValue={listingData.bathroom}
               className="focus:outline-none bg-white rounded-md py-2 px-3  w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               required
             />
@@ -282,7 +338,7 @@ const UpdateListing = () => {
                 className=" border border-gray-300 flex  items-center justify-between px-4 p-1 rounded-md"
               >
                 <img
-                  src={image}
+                  src={image.url}
                   alt="image"
                   className="w-20 h-20 object-contain "
                 />
@@ -300,7 +356,7 @@ const UpdateListing = () => {
             disabled={loading}
             className=" bg-blue rounded-md py-2 px-3 w-full text-white hover:opacity-90 transition-all duration-150 ease-in-out disabled:opacity-90"
           >
-            {loading ? "Loading..." : "Create"}
+            {loading ? "Loading..." : "Update"}
           </button>
         </div>
       </form>

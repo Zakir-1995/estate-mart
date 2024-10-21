@@ -66,7 +66,7 @@ export const getSingleListing = async (req, res, next) => {
 };
 
 export const updateListing = async (req, res, next) => {
-  const body = req.body;
+  const { data } = req.body;
   const {
     name,
     description,
@@ -81,22 +81,35 @@ export const updateListing = async (req, res, next) => {
     parking,
     userRef,
     images,
-  } = body;
+  } = data;
 
   try {
-    const listing = await Listing.findById({ _id: req.params.id });
+    const listing = await Listing.findOne({ _id: req.params.id });
 
-    if (images.length > 0) {
-      listing.images.map(async (img) => {
-        const imgId = img.public_id;
-        await cloudinary.uploader.destroy(imgId, {
+    let result = listing.images.filter(
+      (img1) => !images.flat().some((img2) => img1.public_id === img2.public_id)
+    );
+
+    if (result) {
+      result.map(async (item) => {
+        await cloudinary.uploader.destroy(item.public_id, {
           folder: "estate-mart",
         });
       });
     }
 
-    const allImages = images.map(async (img) => {
-      const result = await cloudinary.uploader.upload(img, {
+    let result2 = listing.images.filter((img1) =>
+      images.flat().some((img2) => img1.public_id === img2.public_id)
+    );
+    let result3 = images
+      .flat()
+      .filter(
+        (img1) =>
+          !listing.images.some((img2) => img1.public_id === img2.public_id)
+      );
+
+    const allImages = result3.map(async (img) => {
+      const result = await cloudinary.uploader.upload(img.url, {
         folder: "estate-mart",
       });
       return result;
@@ -113,7 +126,8 @@ export const updateListing = async (req, res, next) => {
         public_id: file.public_id,
       });
     }
-
+    const updatedFiles = [...files, ...result2]
+   
     const updatedListing = await Listing.findByIdAndUpdate(
       req.params.id,
       {
@@ -122,7 +136,7 @@ export const updateListing = async (req, res, next) => {
           description: description ? description : listing.description,
           address: address ? address : listing.address,
           regularPrice: regularPrice ? regularPrice : listing.regularPrice,
-          discountPrice: discountPrice ? discountPrice : listing.discountPrice,
+          discountPrice: discountPrice,
           bedroom: bedroom ? bedroom : listing.bedroom,
           bathroom: bathroom ? bathroom : listing.bathroom,
           furnished: furnished ? furnished : listing.furnished,
@@ -130,7 +144,7 @@ export const updateListing = async (req, res, next) => {
           type: type ? type : listing.type,
           offer: offer ? offer : listing.offer,
           userRef: userRef ? userRef : listing.userRef,
-          images: images.length > 0 ? files : listing.images,
+          images: updatedFiles ? updatedFiles : listing.images,
         },
       },
       { new: true }
@@ -147,17 +161,16 @@ export const updateListing = async (req, res, next) => {
   }
 };
 
-
 export const deleteListing = async (req, res) => {
   try {
-     const listing = await Listing.findById({ _id: req.params.id });
-   
-       listing.images.map(async (img) => {
-         const imgId = img.public_id;
-         await cloudinary.uploader.destroy(imgId, {
-           folder: "estate-mart",
-         });
-       });
+    const listing = await Listing.findById({ _id: req.params.id });
+
+    listing.images.map(async (img) => {
+      const imgId = img.public_id;
+      await cloudinary.uploader.destroy(imgId, {
+        folder: "estate-mart",
+      });
+    });
 
     await Listing.findByIdAndDelete(req?.params.id);
 

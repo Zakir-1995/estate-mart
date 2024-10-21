@@ -90,10 +90,10 @@ const Profile = () => {
         `http://localhost:8080/api/user/update-user/${currentUser._id}`,
         {
           method: "PUT",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include",
           body: JSON.stringify({
             username,
             email,
@@ -126,6 +126,7 @@ const Profile = () => {
         `http://localhost:8080/api/user/delete-user/${currentUser._id}`,
         {
           method: "DELETE",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -169,19 +170,45 @@ const Profile = () => {
 
   const handleShowListings = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/api/listing/get-listings`);
+      const res = await fetch(
+        `http://localhost:8080/api/listing/get-listings`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       const fetchData = await res.json();
       if (fetchData.success) {
         setListings(fetchData.data);
-      }
-      if (fetchData.error) {
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  console.log(listings);
+  const handleDeleteListing = async (id) => {
+    try {
+      alert("are you sure?");
+      const res = await fetch(
+        `http://localhost:8080/api/listing/delete-listing/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+      const fetchData = await res.json();
+      if (fetchData?.success) {
+        toast.success(fetchData?.message);
+        handleShowListings();
+      }
+      if (fetchData?.error) {
+        toast.error(fetchData?.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="mt-20 max-w-6xl mx-auto flex flex-col  px-5 justify-center h-fit py-5">
       <h3 className="text-3xl font-medium text-gray-800 py-5 text-center">
@@ -296,27 +323,35 @@ const Profile = () => {
         </button>
 
         <div className="w-full flex flex-col gap-3 my-5">
-          {listings.length > 0 &&
-            listings.map((item) => (
+          {listings?.length > 0 &&
+            listings?.map((item) => (
               <div
-                key={item._id}
+                key={item?._id}
                 className="border border-gray-300 p-1 rounded flex items-center justify-between"
               >
-                <div className="flex items-center gap-3 ">
-                  <img
-                    src={item.images[0].url}
-                    alt={item.name}
-                    className="w-16 object-cover"
-                  />
-                  <span className="  font-medium text-gray-800">
-                    {item.name}
-                  </span>
-                </div>
+                <Link to={`/listing/${item._id}`}>
+                  {" "}
+                  <div className="flex items-center gap-3 ">
+                    <img
+                      src={item?.images[0]?.url}
+                      alt={item?.name}
+                      className="w-16 object-cover"
+                    />
+                    <span className="  font-medium text-gray-800">
+                      {item.name}
+                    </span>
+                  </div>
+                </Link>
                 <div className="space-x-2">
-                  <button className="text-green-800 ">
-                    <HiMiniPencilSquare size={15} />
-                  </button>
-                  <button className="text-megenta ">
+                  <Link to={`/update-listing/${item?._id}`}>
+                    <button className=" text-green-800">
+                      <HiMiniPencilSquare size={15} />
+                    </button>
+                  </Link>
+                  <button
+                    className="text-megenta "
+                    onClick={() => handleDeleteListing(item?._id)}
+                  >
                     <RiDeleteBin4Line size={16} />
                   </button>
                 </div>
