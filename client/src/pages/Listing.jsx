@@ -9,14 +9,18 @@ import { CgChevronLeftO, CgChevronRightO } from "react-icons/cg";
 import { MdLocationOn } from "react-icons/md";
 import { IoBed } from "react-icons/io5";
 import { FaBath, FaParking, FaChair } from "react-icons/fa";
+import {useSelector} from 'react-redux'
+import Contact from "../components/Contact";
 
 const Listing = () => {
+  const {currentUser} = useSelector((state)=>state.user)
   const [listingData, setListingData] = useState(null);
+  const [contact,setContact] = useState(false)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const { id } = useParams();
   const swiperRef = useRef();
-console.log(listingData);
+ 
   useEffect(() => {
     const getListing = async () => {
       try {
@@ -163,6 +167,19 @@ console.log(listingData);
                 </span>
               </div>
             </div>
+            {currentUser &&
+              listingData?.userRef !== currentUser._id &&
+              !contact && (
+                <div className="w-full mt-5">
+                  <button
+                    onClick={() => setContact(true)}
+                    className="bg-gray-600/90 transition-all duration-150 ease-in-out text-white px-2 py-2 rounded-full w-full uppercase hover:bg-gray-600"
+                  >
+                    Contact Landlord
+                  </button>
+                </div>
+              )}
+            {contact && <Contact listingData={listingData} />}
           </div>
         </div>
       )}

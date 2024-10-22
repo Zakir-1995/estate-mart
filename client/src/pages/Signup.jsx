@@ -14,7 +14,6 @@ const Signup = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const registerInfo = Object.fromEntries(formData);
-    console.log(registerInfo);
     try {
       setLoading(true);
 

@@ -1,9 +1,33 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
+
 export const getUsers = async (req, res) => {
   try {
     return res.status(200).json({
       message: "works fine!",
+      error: false,
+      success: true,
+    });
+  } catch (err) {
+    return res.status(200).json({
+      message: err.message || err,
+      error: true,
+      success: false,
+    });
+  }
+};
+
+export const getUser = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req?.params?.id });
+    console.log(user);
+    if (!user) {
+      return res.status(500).json({ message: "User Not Found!" });
+    }
+    const { password: pass, ...rest } = user._doc;
+
+    return res.status(200).json({
+      data: rest,
       error: false,
       success: true,
     });
@@ -84,11 +108,11 @@ export const deleteUser = async (req, res) => {
 
 export const Signout = async (req, res) => {
   try {
-   return res.clearCookie("token").json({
-     message: "User Signout Successfully!",
-     error: false,
-     success: true,
-   });
+    return res.clearCookie("token").json({
+      message: "User Signout Successfully!",
+      error: false,
+      success: true,
+    });
   } catch (err) {
     next(errorHandler(500, err.message));
   }
