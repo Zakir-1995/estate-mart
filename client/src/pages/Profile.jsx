@@ -174,7 +174,6 @@ const Profile = () => {
         `http://localhost:8080/api/listing/get-listings`,
         {
           method: "GET",
-          credentials: "include",
         }
       );
       const fetchData = await res.json();

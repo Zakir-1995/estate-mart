@@ -8,6 +8,6 @@ router.get("/users", getUsers);
 router.get("/user/:id",verifyToken, getUser);
 router.put("/update-user/:id",verifyToken, updateUser);
 router.delete("/delete-user/:id", verifyToken, deleteUser);
-router.post("/signout", Signout);
+router.post("/signout",verifyToken, Signout);
 
 export default router
