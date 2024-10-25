@@ -124,17 +124,17 @@ export const googleSignin = async (req, res, next) => {
 
       await newUser.save();
 
-        const age = 1000 * 60 * 60 * 24 * 7;
+      const age = 1000 * 60 * 60 * 24 * 7;
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: age,
       });
 
-           const tokenOption = {
-             httpOnly: true,
-             // secure: true,
-             maxAge: age,
-      }; 
-      
+      const tokenOption = {
+        httpOnly: true,
+        // secure: true,
+        maxAge: age,
+      };
+
       res.cookie("token", token, tokenOption).json({
         success: true,
         error: false,
@@ -146,5 +146,3 @@ export const googleSignin = async (req, res, next) => {
     next(err);
   }
 };
-
-
