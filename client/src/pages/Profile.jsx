@@ -209,7 +209,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="mt-20 max-w-6xl mx-auto flex flex-col  px-5 justify-center h-fit py-5">
+    <div className="mt-20 max-w-6xl mx-auto flex flex-col  p-5 justify-center h-fit ">
       <h3 className="text-3xl font-medium text-gray-800 py-5 text-center">
         Profile
       </h3>
