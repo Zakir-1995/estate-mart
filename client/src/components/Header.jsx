@@ -1,15 +1,33 @@
 import { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoMenu, IoCloseSharp } from "react-icons/io5";
 import {useSelector} from "react-redux"
 const Header = () => {
   const { currentUser } = useSelector((state) => state.user)
-  const location = useLocation();
-  const navigate = useNavigate()
+  // const location = useLocation();
   const [isSticky, setSticky] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchTerm,setSearchTerm] = useState("")
+   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("searchTerm", searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+    // eslint-disable-next-line
+  }, [location.search]);
+  
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -25,22 +43,6 @@ const Header = () => {
     };
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const urlParams = new URLSearchParams(window.location.search)
-    urlParams.set("searchTerm", searchTerm)
-    const searchQuery = urlParams.toString()
-    navigate(`/search?${searchQuery}`)
-  }
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search)
-    const searchTermFromUrl = urlParams.get("searchTerm");
-    if (searchTermFromUrl) {
-      setSearchTerm(searchTermFromUrl)
-    }
-  },[location.search])
-
   return (
     <header
       className={`  fixed top-0 left-0 right-0 xl:px-24 sm:px-4 px-2 z-50  p-3 border-b border-gray-300 ${
@@ -53,10 +55,14 @@ const Header = () => {
         <Link to="/">
           <img src="/EstateMart.png" alt="/" className="w-36" />
         </Link>
-        <form onSubmit={handleSubmit} className="border border-gray-300 rounded p-2 md:flex items-center justify-between hidden ">
+        <form
+          onSubmit={handleSubmit}
+          className="border border-gray-300 rounded p-2 md:flex items-center justify-between hidden "
+        >
           <input
             type="text"
             placeholder="Search..."
+            value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="bg-transparent focus:outline-none w-24 sm:w-64 pr-4 placeholder:text-lg text-gray-600 text-lg placeholder:font-light"
           />

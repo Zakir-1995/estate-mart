@@ -69,11 +69,10 @@ const UpdateListing = () => {
     const formData = new FormData(e.target);
     const inputs = Object.fromEntries(formData);
     const updatedInfo = { ...inputs, images: listingImage };
-    console.log(updatedInfo);
     try {
       if (listingImage.length > 6)
         return toast.error("images must not exceed the limit six");
-      if (inputs.regularPrice > inputs.discountPrice)
+      if (inputs.regularPrice < inputs.discountPrice)
         return toast.error("Discount price must be lower than regular price");
       setLoading(true);
       const res = await fetch(
