@@ -67,18 +67,20 @@ const Listing = () => {
               }}
               loop={true}
               speed={2000}
-              className="mySwiper"
               onBeforeInit={(swiper) => {
                 swiperRef.current = swiper;
               }}
             >
               {listingData.images.map((image, index) => (
-                <SwiperSlide key={index} className="h-[500px] ">
+                <SwiperSlide key={index} className="h-[500px] w-full ">
                   <div
-                    className="h-full w-full"
+                    className="h-full w-full "
                     style={{
-                      background: `url(${image?.url}) no-repeat center `,
-                      objectFit: "cover",
+                      backgroundImage: `url(${image?.url}) `,
+                      backgroundSize: "100vw 130vh",
+                      backgroundPosition: "100% 100%",
+                      backgroundRepeat: "no-repeat",
+                      minHeight: "100vh",
                     }}
                   ></div>
                 </SwiperSlide>
@@ -113,11 +115,11 @@ const Listing = () => {
               </span>
             </div>
             <div className="flex items-center gap-5 mt-5">
-              <span className="sm:text-xl text-lg font-medium bg-megenta w-[100px] flex justify-center text-white  rounded py-[2px]">
+              <span className="sm:text-lg text-base font-medium bg-megenta w-[100px] flex justify-center text-white  rounded py-[2px]">
                 {listingData?.type === "rent" ? " For Rent" : "For Sell"}
               </span>
               {listingData?.offer && (
-                <span className="text-xl font-medium bg-green-700 w-[100px] flex justify-center text-white  rounded py-[2px]">
+                <span className="sm:text-lg text-base whitespace-nowrap font-medium bg-green-700 w-[100px] px-2 flex justify-center text-white  rounded py-[2px]">
                   $
                   {`${
                     listingData?.discountPrice

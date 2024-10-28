@@ -1,8 +1,177 @@
-
+import { useEffect, useRef, useState } from "react";
+import { CgChevronLeftO, CgChevronRightO } from "react-icons/cg";
+import { Link } from "react-router-dom";
+import { Autoplay } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { baseUrl } from "../helper/baseUrl";
+import ListingItem from "../components/ListingItem";
 const Home = () => {
-  return (
-    <div className="mt-20">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque facere dignissimos aliquam omnis eum ut, excepturi amet. Ad quas dolore nisi quia illo aspernatur iusto aliquid facilis molestias, dolor repellat qui consequuntur nulla ipsam fugiat incidunt a hic eaque ipsa. Assumenda dignissimos tenetur et asperiores cumque perspiciatis facere error illo accusamus, repellendus nobis dolore deserunt nesciunt hic, expedita aut sequi atque eum fuga molestias. Maiores nisi qui nihil sunt quas quia consequuntur sapiente perferendis minus, laudantium enim incidunt, quam earum dolorem accusantium, quasi provident animi. Eaque, nam? Quidem eligendi deserunt accusamus, quod mollitia hic magnam totam recusandae laborum, aliquam nesciunt iste ratione dolorum alias et quae. Alias in placeat unde sit magnam nemo dignissimos, exercitationem quam saepe veniam veritatis aperiam, optio beatae? Ipsam, nemo? Saepe minima repudiandae voluptate ad, accusantium, dolorem illum quia officiis nobis dignissimos cumque quae autem, earum aliquam nihil doloribus eius natus repellat. Eius inventore incidunt exercitationem nesciunt eligendi hic illo corrupti vitae, dolore nihil sequi, consectetur itaque aut suscipit dicta voluptatibus deserunt illum delectus minima, dolorum odit dignissimos recusandae assumenda non. Expedita, numquam. Velit, sequi! Consequatur perferendis eum delectus, voluptatum odit exercitationem, dicta inventore quidem ipsa, ex dolorem laboriosam. Magni architecto, dolore cumque, autem quia corrupti error est deleniti cupiditate, natus possimus facilis saepe consequuntur iusto dolorum obcaecati ratione provident delectus vitae! Blanditiis eum deserunt molestias et. Veniam iste eveniet qui perferendis sint amet voluptates soluta veritatis a rerum commodi odit harum, facere accusantium perspiciatis reiciendis similique sequi quae! Ab explicabo cupiditate recusandae culpa quas praesentium exercitationem dignissimos eos sed hic eum itaque tempora tempore nemo, officia officiis quia architecto esse delectus nostrum ullam impedit voluptatibus? Unde architecto ut velit accusantium ratione soluta sit. Nemo repellendus mollitia ut. Amet perspiciatis quaerat quod sed error! Vitae unde voluptatibus quis quibusdam. Iure, dolor error quasi libero quisquam facere. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam animi aspernatur sapiente molestias aliquid sint unde, nisi officia maxime porro neque eum deleniti blanditiis dolor laudantium magni aut repellat ratione. Incidunt architecto rem sunt harum mollitia exercitationem quod tempore voluptate sequi aut nobis voluptatibus eveniet rerum fugiat eaque obcaecati reprehenderit, commodi quos nulla quia et natus! Excepturi veritatis suscipit tenetur hic, consequatur eius repellendus modi voluptas facilis, quisquam deleniti non! Quae velit modi nostrum totam, provident illum iure odit ipsam cum quos alias accusantium magni enim, maiores esse reprehenderit facere exercitationem officia officiis odio sed illo cupiditate at sit! Quas aperiam voluptate totam molestiae quos amet reprehenderit autem corrupti veniam ducimus, dolorem porro assumenda, adipisci, quae cum tenetur. Voluptates mollitia corrupti provident suscipit natus quisquam enim, delectus odit ex minima omnis minus ut ullam maiores laborum eveniet eius! Voluptatum mollitia quod numquam minima, iure et! Similique possimus reiciendis, ad beatae asperiores sunt harum id amet odio exercitationem. Beatae hic dolor ipsa! Blanditiis aliquam repudiandae nam repellendus tempore dolores ex incidunt ad nobis ut unde officia obcaecati distinctio consequuntur, tempora, itaque harum. Ipsum consequatur illo dolor illum quos id unde. Fugit eum magnam aut labore libero deserunt. At exercitationem qui, animi, assumenda fuga, eos molestias voluptatibus nam sapiente adipisci nemo odio. Mollitia ut repudiandae quo odit, sapiente tempore! Aliquam commodi, quis vitae necessitatibus eligendi nisi iste laudantium sunt corrupti. Deserunt tempore adipisci, esse est omnis odit voluptatibus, dolorem magnam iste veniam provident alias libero molestiae assumenda laborum debitis consequatur dolorum perspiciatis rem praesentium, sit sint! Magnam, reprehenderit. Error eligendi, autem culpa dolorum ab nemo, aliquam facilis maxime architecto nostrum nam, officiis itaque cumque? Odit inventore vel, animi exercitationem laboriosam nobis quam harum repellat ex tenetur. Repudiandae nisi dignissimos, nulla necessitatibus asperiores minima doloremque, quaerat praesentium sit facilis in iusto ullam. Vero eum ducimus veritatis quasi. Architecto consequuntur a alias maxime voluptatibus. Repudiandae magni omnis ut distinctio neque magnam commodi quasi, amet ipsam atque eius. Aperiam recusandae dignissimos quia corrupti eius expedita rerum mollitia dolor beatae, voluptatem quam ex sint in facilis voluptas nobis iusto dolorem unde quas ea soluta ipsum adipisci a maxime? Molestiae nemo quod obcaecati ea nihil dolores, necessitatibus asperiores blanditiis beatae facilis ipsam. Deserunt eius, modi corrupti magnam ducimus animi esse reprehenderit nam ipsam accusantium sint, vel dicta, ipsum tenetur voluptates laboriosam obcaecati tempora voluptate repellendus ratione distinctio consequuntur itaque illo officiis! Adipisci, labore. Cumque aperiam ipsa, illo adipisci et laborum possimus iusto quasi neque minus quisquam, sequi molestias tenetur ullam quaerat explicabo magnam rem! Dolor voluptates ad debitis, omnis quod at soluta consectetur aspernatur maxime eaque temporibus similique deserunt esse voluptate, voluptatem blanditiis, optio veniam inventore. Est, ducimus aperiam voluptatem facere esse error numquam labore laudantium necessitatibus aliquam rem rerum. Officia libero dolorum placeat, minus nemo pariatur voluptates, fuga dignissimos natus dicta excepturi reprehenderit nulla exercitationem impedit ab amet ipsum similique iste voluptatem voluptas? Dolorem asperiores aperiam itaque quibusdam, obcaecati, amet consequuntur dolores quod in architecto saepe quia suscipit rem exercitationem aliquid pariatur sapiente nesciunt assumenda distinctio libero ab voluptatem similique quam? Sed alias adipisci natus velit laboriosam reprehenderit, tenetur porro debitis aut, dolorem suscipit quo voluptatem? Ea perspiciatis ad facere veniam reprehenderit, id suscipit nisi ipsum maxime a voluptatum quos odit delectus quo, quod cum, porro beatae ab quae? Perferendis, saepe iusto. Quo vero iusto error ullam eaque. Hic nulla, nisi doloribus impedit tempora animi ipsa dolor inventore velit molestiae doloremque voluptatem facilis beatae ut fugiat possimus numquam excepturi illo, commodi a error recusandae? Dolore reprehenderit voluptatibus eaque aspernatur quas consequatur repudiandae unde tempora, cum voluptate minima error, ad fugit mollitia quidem? Quo officiis, tempora libero sapiente impedit, magni rerum veritatis veniam officia error itaque numquam est unde perferendis explicabo doloribus? Possimus, repellendus? Rem non cumque excepturi eaque natus mollitia accusamus necessitatibus totam aperiam quibusdam nisi minima nesciunt corrupti, reprehenderit voluptatum ad pariatur? Architecto impedit totam quasi eaque quas perspiciatis, molestias rem voluptatem corrupti, perferendis, quaerat soluta quidem et dolorum vero dolorem repudiandae. Amet odio sit, pariatur necessitatibus placeat neque, ullam nulla vero dolorum incidunt harum alias consequuntur atque? Sunt amet repudiandae saepe ut cupiditate dignissimos facilis optio asperiores, praesentium tempora quisquam non error accusamus iusto ex omnis velit voluptatem pariatur laudantium temporibus perspiciatis iste repellat recusandae. Nobis earum laudantium quis optio natus accusamus mollitia magni nisi beatae. Dolor veritatis ratione velit repellendus animi, dolorem debitis. Quae praesentium dolore, fugit, ullam ex id harum aspernatur dolor ad repudiandae culpa eum nihil? Nostrum voluptas rem delectus tenetur quod, earum voluptatibus iure voluptates ratione voluptatum distinctio minima consequatur, nesciunt, alias cumque corporis libero nobis. Illum reprehenderit enim ducimus voluptate vero, reiciendis, expedita impedit sint corporis sapiente necessitatibus distinctio veritatis voluptatum praesentium. Eos saepe quae itaque impedit voluptate! Aut, reiciendis facilis sequi placeat odio quidem tempore sed! Itaque beatae inventore repudiandae esse sunt nesciunt? Voluptate, quaerat omnis nemo, quidem totam reiciendis quis nulla voluptas fuga, iure velit! Sit tempora repudiandae doloremque aliquam, debitis sequi numquam labore molestias aperiam beatae natus possimus dicta corrupti voluptates perferendis saepe laboriosam. Labore blanditiis amet sapiente exercitationem rerum fugiat dicta ipsa voluptas eius odit! Minima, laboriosam asperiores veniam aliquid quasi repellat dolorum porro maxime rem, voluptates suscipit explicabo sed officiis laudantium iste quae magnam repudiandae? Vitae, quas. Aut, illo necessitatibus? Unde nesciunt mollitia nam? Eum doloribus sapiente accusantium commodi recusandae impedit distinctio soluta quam? Iusto rem, blanditiis expedita ut nostrum saepe labore eligendi porro totam natus delectus. Quisquam magni ad consequatur provident officiis, fugiat ut culpa neque odio earum necessitatibus iusto facere quas obcaecati nobis possimus. Earum, laborum suscipit mollitia eveniet nulla possimus voluptatem corrupti, quo, voluptas ipsam esse excepturi. Nemo consectetur molestias officia expedita incidunt vero in nam laboriosam enim accusantium, cupiditate molestiae optio, sint labore reiciendis possimus officiis saepe ipsam deleniti! Excepturi officiis minus sunt magni quidem quaerat ullam, ratione incidunt facilis id dolores iure fugiat porro quia provident sit culpa sed. Sed quasi sequi, libero quo in voluptatibus suscipit. At, tempora repellendus. Ipsa magni voluptate blanditiis repellat, molestiae quas facere, vero esse ut rem neque voluptates ex deleniti, ad placeat perspiciatis.</div>
-  )
-}
+  const swiperRef = useRef();
+  const [offerListings, setOfferListings] = useState([]);
+  const [sellListings, setSellListings] = useState([]);
+  const [rentListings, setRentListings] = useState([]);
 
-export default Home
+  console.log(offerListings, sellListings, rentListings);
+
+  useEffect(() => {
+    const fetchOfferListings = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/listing/search?offer=true&limit=5`);
+        const data = await res.json();
+        if (data) {
+          setOfferListings(data);
+          fetchRentListings();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const fetchRentListings = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/listing/search?type=rent&limit=5`);
+        const data = await res.json();
+        if (data) {
+          setRentListings(data);
+          fetchSellListings();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const fetchSellListings = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/listing/search?type=sell&limit=5`);
+        const data = await res.json();
+        if (data) {
+          setSellListings(data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchOfferListings();
+  }, []);
+
+  return (
+    <>
+      <div className="mt-20  max-w-6xl mx-auto xl:px-0 px-3 ">
+        <div className="w-full flex flex-col gap-4 py-6">
+          <h1 className=" lg:text-6xl text-3xl font-semibold text-gray-800">
+            Find your next <span className="text-megenta">perfect</span> <br />{" "}
+            place with ease
+          </h1>
+          <p className="py-3 lg:text-sm text-xs  font-medium text-gray-600 leading-6">
+            Estate mart will help you find your home fast, easy and comfortable.{" "}
+            <br /> We have a wide range of properties for you to choose them.{" "}
+          </p>
+          <Link
+            to="/search"
+            className="text-blue font-bold lg:text-lg text-base hover:underline w-fit"
+          >
+            Let{"'"}s Get Started...{" "}
+          </Link>
+        </div>
+      </div>
+      <div className="relative">
+        <Swiper
+          modules={[Autoplay]}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          loop={true}
+          speed={2000}
+          onBeforeInit={(swiper) => {
+            swiperRef.current = swiper;
+          }}
+        >
+          {offerListings &&
+            offerListings.length > 0 &&
+            offerListings.map((image, index) => (
+              <SwiperSlide key={index} className="h-[450px] w-full ">
+                <div
+                  className="h-full w-full "
+                  style={{
+                    backgroundImage: `url(${image?.images[0].url}) `,
+                    backgroundSize: "100vw 130vh",
+                    backgroundPosition: "100% 100%",
+                    backgroundRepeat: "no-repeat",
+                    minHeight: "100vh",
+                  }}
+                ></div>
+              </SwiperSlide>
+            ))}
+        </Swiper>
+        <button
+          className="absolute top-[50%] z-50 -translate-y-[50%] left-10 opacity-70 hover:opacity-100 transition ease-linear duration-150"
+          onClick={() => swiperRef.current?.slidePrev()}
+        >
+          <CgChevronLeftO size={25} />
+        </button>
+        <button
+          className="absolute top-[50%] z-50 -translate-y-[50%] right-10 opacity-70 hover:opacity-100 transition ease-linear duration-150"
+          onClick={() => swiperRef.current?.slideNext()}
+        >
+          <CgChevronRightO size={25} />
+        </button>
+      </div>
+      <div className="max-w-6xl mx-auto xl:px-0 px-3 py-6">
+        <h5 className="text-xl font-semibold text-gray-800 pb-1">
+          Recent Offer
+        </h5>
+        <hr className=" border-gray-400 pb-1" />
+        <Link
+          to="/search?offer=true"
+          className="hover:underline text-sm font-semibold text-blue"
+        >
+          View More Offers...
+        </Link>
+        <div className="  grid grid-cols-5 gap-5 place-items-center py-5">
+          {offerListings &&
+            offerListings.length > 0 &&
+            offerListings.map((listing) => (
+              <ListingItem key={listing._id} listing={listing} />
+            ))}
+        </div>
+        <h5 className="text-xl font-semibold text-gray-800 pb-1">
+          Apartment For Rent
+        </h5>
+        <hr className=" border-gray-400 pb-1" />
+        <Link
+          to="/search?type=rent"
+          className="hover:underline text-sm font-semibold text-blue"
+        >
+          View More Appartment...
+        </Link>
+        <div className="  grid grid-cols-5 gap-5 place-items-center py-5">
+          {rentListings &&
+            rentListings.length > 0 &&
+            rentListings.map((rent) => (
+              <ListingItem key={rent._id} listing={rent} />
+            ))}
+        </div>
+        <h5 className="text-xl font-semibold text-gray-800 pb-1">
+          Apartment For Sell
+        </h5>
+        <hr className=" border-gray-400 pb-1" />
+        <Link
+          to="/search?type=sell"
+          className="hover:underline text-sm font-semibold text-blue"
+        >
+          View More Appartment...
+        </Link>
+        <div className="  grid grid-cols-5 gap-5 place-items-center py-5">
+          {sellListings &&
+            sellListings.length > 0 &&
+            sellListings.map((sell) => (
+              <ListingItem key={sell._id} listing={sell} />
+            ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default Home;

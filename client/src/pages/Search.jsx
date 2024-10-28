@@ -52,7 +52,6 @@ const Search = () => {
   };
 
 
-console.log(listings)
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
@@ -297,7 +296,7 @@ console.log(listings)
           {showMore && (
             <button
               onClick={onShowMoreClick}
-              className="text-green-700 hover:underline p-7 text-center w-full"
+              className="text-green-700 hover:underline p-7 text-center w-fit"
             >
               Show more
             </button>
