@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom'
 import Breadcrumb from "../components/Breadcrumb";
 import { Helmet } from "react-helmet";
+import {baseUrl} from '../helper/baseUrl'
 const CreateListing = () => {
   const navigate = useNavigate()
   const { currentUser } = useSelector((state) => state.user);
@@ -35,7 +36,7 @@ const CreateListing = () => {
       if (inputs.regularPrice < inputs.discountPrice)
         return toast.error("Discount price must be lower than regular price");
       setLoading(true);
-      const res = await fetch("http://localhost:8080/api/listing/create", {
+      const res = await fetch(`${baseUrl}/listing/create`, {
         method: "POST",
         credentials:"include",
         headers: {

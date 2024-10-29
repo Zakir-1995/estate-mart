@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import Breadcrumb from "../components/Breadcrumb";
 import { Helmet } from "react-helmet";
+import { baseUrl } from "../helper/baseUrl";
 
 const UpdateListing = () => {
   const { id } = useParams();
@@ -33,13 +34,10 @@ const UpdateListing = () => {
   useEffect(() => {
     const getListing = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:8080/api/listing/get-single-listing/${id}`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
+        const res = await fetch(`${baseUrl}/listing/get-single-listing/${id}`, {
+          method: "GET",
+          credentials: "include",
+        });
         const fetchData = await res.json();
         if (fetchData?.success) {
           setListingData(fetchData?.data);
@@ -78,7 +76,7 @@ const UpdateListing = () => {
         return toast.error("Discount price must be lower than regular price");
       setLoading(true);
       const res = await fetch(
-        `http://localhost:8080/api/listing/update-listing/${id}`,
+        `${baseUrl}/listing/update-listing/${id}`,
         {
           method: "PUT",
           credentials: "include",

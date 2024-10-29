@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Oauth from "../components/Oauth";
 import { useSelector } from "react-redux";
 import Breadcrumb from "../components/Breadcrumb";
+import { baseUrl } from "../helper/baseUrl";
 const Signup = () => {
   const navigate = useNavigate();
   const [openEye, setOpenEye] = useState(false);
@@ -18,7 +19,7 @@ const Signup = () => {
     try {
       setLoading(true);
 
-      const res = await fetch(`http://localhost:8080/api/auth/signup`, {
+      const res = await fetch(`${baseUrl}/auth/signup`, {
         method: "POST",
         credentials: "include",
         headers: {

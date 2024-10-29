@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { signinStart, signinSuccess, signinFailure } from "../redux/userSlice";
 import Oauth from "../components/Oauth";
 import Breadcrumb from "../components/Breadcrumb";
+import {baseUrl} from '../helper/baseUrl'
 const Signin = () => {
   const navigate = useNavigate();
   const [openEye, setOpenEye] = useState(false);
@@ -19,7 +20,7 @@ const Signin = () => {
     try {
 
       dispatch(signinStart());
-      const res = await fetch(`http://localhost:8080/api/auth/signin`, {
+      const res = await fetch(`${baseUrl}/auth/signin`, {
         method: "POST",
         credentials: "include",
         headers: {

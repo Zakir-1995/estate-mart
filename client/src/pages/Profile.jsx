@@ -25,6 +25,7 @@ import {
 import { Link } from "react-router-dom";
 import Breadcrumb from "../components/Breadcrumb";
 import { Helmet } from "react-helmet";
+import { baseUrl } from "../helper/baseUrl";
 
 // firbase storage
 // allow read;
@@ -89,7 +90,7 @@ const Profile = () => {
     try {
       dispatch(updateUserStart());
       const res = await fetch(
-        `http://localhost:8080/api/user/update-user/${currentUser._id}`,
+        `${baseUrl}/user/update-user/${currentUser._id}`,
         {
           method: "PUT",
           credentials: "include",
@@ -125,14 +126,13 @@ const Profile = () => {
       alert("are you sure?");
       dispatch(deleteUserStart());
       const res = await fetch(
-        `http://localhost:8080/api/user/delete-user/${currentUser._id}`,
+        `${baseUrl}/user/delete-user/${currentUser._id}`,
         {
           method: "DELETE",
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include",
         }
       );
       const fetchData = await res.json();
@@ -152,7 +152,7 @@ const Profile = () => {
   const handleSignout = async () => {
     try {
       dispatch(signoutStart());
-      const res = await fetch(`http://localhost:8080/api/user/signout`, {
+      const res = await fetch(`${baseUrl}/user/signout`, {
         method: "POST",
         credentials: "include",
       });
@@ -172,12 +172,9 @@ const Profile = () => {
 
   const handleShowListings = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:8080/api/listing/get-listings`,
-        {
-          method: "GET",
-        }
-      );
+      const res = await fetch(`${baseUrl}/listing/get-listings`, {
+        method: "GET",
+      });
       const fetchData = await res.json();
       if (fetchData.success) {
         setListings(fetchData.data);
@@ -190,13 +187,10 @@ const Profile = () => {
   const handleDeleteListing = async (id) => {
     try {
       alert("are you sure?");
-      const res = await fetch(
-        `http://localhost:8080/api/listing/delete-listing/${id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const res = await fetch(`${baseUrl}/listing/delete-listing/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
       const fetchData = await res.json();
       if (fetchData?.success) {
         toast.success(fetchData?.message);
@@ -295,13 +289,15 @@ const Profile = () => {
             {loading ? <p>Loading...</p> : "Update"}
           </button>
         </form>
-        <div className="sm:max-w-[40%] mx-auto  w-full mt-5">
-          <Link to="/create-listing">
-            <button className=" bg-green-700 rounded-md py-2 px-3  w-full text-white hover:opacity-90 transition-all duration-150 ease-in-out disabled:opacity-90">
-              Create Listing
-            </button>
-          </Link>
-        </div>
+        {currentUser?.isAdmin && (
+          <div className="sm:max-w-[40%] mx-auto  w-full mt-5">
+            <Link to="/create-listing">
+              <button className=" bg-green-700 rounded-md py-2 px-3  w-full text-white hover:opacity-90 transition-all duration-150 ease-in-out disabled:opacity-90">
+                Create Listing
+              </button>
+            </Link>
+          </div>
+        )}
         <div className="sm:max-w-[40%] w-full mx-auto mt-5 flex items-center justify-between gap-5 px-5">
           <button
             onClick={handleDeleteUser}
@@ -320,51 +316,53 @@ const Profile = () => {
           </div>
         )}
 
-        <div className="sm:max-w-[40%] w-full mx-auto mt-2 flex flex-col items-center justify-between ">
-          <button
-            className=" font-semibold text-green-600 w-full"
-            onClick={handleShowListings}
-          >
-            Show Listing
-          </button>
+        {currentUser?.isAdmin === true && (
+          <div className="sm:max-w-[40%] w-full mx-auto mt-2 flex flex-col items-center justify-between ">
+            <button
+              className=" font-semibold text-green-600 w-full"
+              onClick={handleShowListings}
+            >
+              Show Listing
+            </button>
 
-          <div className="w-full flex flex-col gap-3 my-5">
-            {listings?.length > 0 &&
-              listings?.map((item) => (
-                <div
-                  key={item?._id}
-                  className="border border-gray-300 p-1 rounded flex items-center justify-between"
-                >
-                  <Link to={`/listing/${item._id}`}>
-                    {" "}
-                    <div className="flex items-center gap-3 ">
-                      <img
-                        src={item?.images[0]?.url}
-                        alt={item?.name}
-                        className="w-16 object-cover"
-                      />
-                      <span className="  font-medium text-gray-800">
-                        {item.name}
-                      </span>
-                    </div>
-                  </Link>
-                  <div className="space-x-2">
-                    <Link to={`/update-listing/${item?._id}`}>
-                      <button className=" text-green-800">
-                        <HiMiniPencilSquare size={15} />
-                      </button>
+            <div className="w-full flex flex-col gap-3 my-5">
+              {listings?.length > 0 &&
+                listings?.map((item) => (
+                  <div
+                    key={item?._id}
+                    className="border border-gray-300 p-1 rounded flex items-center justify-between"
+                  >
+                    <Link to={`/listing/${item._id}`}>
+                      {" "}
+                      <div className="flex items-center gap-3 ">
+                        <img
+                          src={item?.images[0]?.url}
+                          alt={item?.name}
+                          className="w-16 object-cover"
+                        />
+                        <span className="  font-medium text-gray-800">
+                          {item.name}
+                        </span>
+                      </div>
                     </Link>
-                    <button
-                      className="text-megenta "
-                      onClick={() => handleDeleteListing(item?._id)}
-                    >
-                      <RiDeleteBin4Line size={16} />
-                    </button>
+                    <div className="space-x-2">
+                      <Link to={`/update-listing/${item?._id}`}>
+                        <button className=" text-green-800">
+                          <HiMiniPencilSquare size={15} />
+                        </button>
+                      </Link>
+                      <button
+                        className="text-megenta "
+                        onClick={() => handleDeleteListing(item?._id)}
+                      >
+                        <RiDeleteBin4Line size={16} />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -72,7 +72,8 @@ export const Signin = async (req, res, next) => {
     const { password: hashedPassword, ...rest } = user._doc;
     const tokenOption = {
       httpOnly: true,
-      // secure: true,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "strict",
       maxAge: age,
     };
 
