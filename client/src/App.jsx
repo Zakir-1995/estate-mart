@@ -10,6 +10,7 @@ import CreateListing from './pages/CreateListing';
 import UpdateListing from './pages/updateListing';
 import Listing from './pages/Listing';
 import Search from './pages/Search';
+import Footer from './components/Footer';
 const App = () => {
   return (
     <div>
@@ -28,6 +29,7 @@ const App = () => {
             <Route path="/update-listing/:id" element={<UpdateListing />} />
           </Route>
         </Routes>
+        <Footer/>
       </BrowserRouter>
     </div>
   );  

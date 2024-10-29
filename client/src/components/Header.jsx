@@ -149,13 +149,21 @@ const Header = () => {
               </li>
             </Link>
           </ul>
-          <form className="border border-white rounded p-2 flex items-center justify-between md:hidden ">
+          <form
+            onSubmit={handleSubmit}
+            className="border border-white rounded p-2 flex items-center justify-between md:hidden "
+          >
             <input
               type="text"
               placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="bg-transparent focus:outline-none w-full placeholder:text-white  pr-4 placeholder:text-lg text-white text-lg placeholder:font-light"
             />
-            <CiSearch size={22} className="text-white" />
+            <button type="submit">
+              {" "}
+              <CiSearch size={22} className="text-white " />
+            </button>
           </form>
         </div>
       </div>

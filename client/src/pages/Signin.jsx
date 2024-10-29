@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { signinStart, signinSuccess, signinFailure } from "../redux/userSlice";
 import Oauth from "../components/Oauth";
+import Breadcrumb from "../components/Breadcrumb";
 const Signin = () => {
   const navigate = useNavigate();
   const [openEye, setOpenEye] = useState(false);
@@ -51,70 +52,73 @@ const Signin = () => {
   },[currentUser,navigate])
 
   return (
-    <div className="mt-20 max-w-6xl mx-auto flex flex-col  px-5 justify-center h-fit py-10">
-      <h3 className="text-3xl font-medium text-gray-800 py-5 text-center">
-        Welcome Back!
-      </h3>
-      <div className="w-full mx-auto flex justify-center mb-5">
-        <img
-          src="/EstateMart.png"
-          alt="logo"
-          className="w-[100px]  object-cover"
-        />
-      </div>
-      <form
-        className="w-full flex flex-col items-center gap-5"
-        onSubmit={handleSubmit}
-      >
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          className="focus:outline-none bg-white rounded-md py-2 px-3 sm:max-w-[40%] w-full"
-        />
-        <div className="relative sm:max-w-[40%] w-full">
-          <input
-            type={openEye ? "text" : "password"}
-            name="password"
-            placeholder="Password"
-            className="focus:outline-none bg-white rounded-md py-2 px-3 w-full"
+    <div className="mt-20 max-w-6xl mx-auto ">
+      <Breadcrumb title="Signin"/>
+      <div className="flex flex-col  px-5 justify-center h-fit py-10">
+        <h3 className="text-3xl font-medium text-gray-800 py-5 text-center">
+          Welcome Back!
+        </h3>
+        <div className="w-full mx-auto flex justify-center mb-5">
+          <img
+            src="/EstateMart.png"
+            alt="logo"
+            className="w-[100px]  object-cover"
           />
-          {!openEye ? (
-            <span className="absolute right-3 top-3 cursor-pointer">
-              <RiEyeLine onClick={() => setOpenEye(true)} />
-            </span>
-          ) : (
-            <span className="absolute right-3 top-3 cursor-pointer">
-              <RiEyeCloseFill onClick={() => setOpenEye(false)} />
-            </span>
-          )}
         </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className=" bg-blue rounded-md py-2 px-3 sm:max-w-[40%] w-full text-white hover:opacity-90 transition-all duration-150 ease-in-out disabled:opacity-90"
+        <form
+          className="w-full flex flex-col items-center gap-5"
+          onSubmit={handleSubmit}
         >
-          {loading ? <p>Loading...</p> : "Submit"}
-        </button>
-      </form>
-      <div className="w-full mx-auto flex justify-center my-5">
-        <Oauth />
-      </div>
-      {error && (
-        <div className="sm:max-w-[40%] w-full mx-auto mt-5 bg-megenta/80 rounded-md py-2 px-3">
-          <span className="  text-white   w-full">{error}</span>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            className="focus:outline-none bg-white rounded-md py-2 px-3 sm:max-w-[40%] w-full"
+          />
+          <div className="relative sm:max-w-[40%] w-full">
+            <input
+              type={openEye ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              className="focus:outline-none bg-white rounded-md py-2 px-3 w-full"
+            />
+            {!openEye ? (
+              <span className="absolute right-3 top-3 cursor-pointer">
+                <RiEyeLine onClick={() => setOpenEye(true)} />
+              </span>
+            ) : (
+              <span className="absolute right-3 top-3 cursor-pointer">
+                <RiEyeCloseFill onClick={() => setOpenEye(false)} />
+              </span>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className=" bg-blue rounded-md py-2 px-3 sm:max-w-[40%] w-full text-white hover:opacity-90 transition-all duration-150 ease-in-out disabled:opacity-90"
+          >
+            {loading ? <p>Loading...</p> : "Submit"}
+          </button>
+        </form>
+        <div className="w-full mx-auto flex justify-center my-5">
+          <Oauth />
         </div>
-      )}
-      <div className="sm:max-w-[40%] w-full mx-auto my-5">
-        <p className="text-sm font-medium text-gray-600 ">
-          Don{"'"}t have an account?
-          <Link to="/signup">
-            <span className="text-blue hover:underline pl-1 font-semibold">
-              Signup
-            </span>
-          </Link>
-        </p>
+        {error && (
+          <div className="sm:max-w-[40%] w-full mx-auto mt-5 bg-megenta/80 rounded-md py-2 px-3">
+            <span className="  text-white   w-full">{error}</span>
+          </div>
+        )}
+        <div className="sm:max-w-[40%] w-full mx-auto my-5">
+          <p className="text-sm font-medium text-gray-600 ">
+            Don{"'"}t have an account?
+            <Link to="/signup">
+              <span className="text-blue hover:underline pl-1 font-semibold">
+                Signup
+              </span>
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

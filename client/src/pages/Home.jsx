@@ -5,13 +5,12 @@ import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { baseUrl } from "../helper/baseUrl";
 import ListingItem from "../components/ListingItem";
+import { Helmet } from "react-helmet";
 const Home = () => {
   const swiperRef = useRef();
   const [offerListings, setOfferListings] = useState([]);
   const [sellListings, setSellListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
-
-  console.log(offerListings, sellListings, rentListings);
 
   useEffect(() => {
     const fetchOfferListings = async () => {
@@ -56,6 +55,9 @@ const Home = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Estate Mart</title>
+      </Helmet>
       <div className="mt-20  max-w-6xl mx-auto xl:px-0 px-3 ">
         <div className="w-full flex flex-col gap-4 py-6">
           <h1 className=" lg:text-6xl text-3xl font-semibold text-gray-800">
@@ -105,64 +107,63 @@ const Home = () => {
             ))}
         </Swiper>
         <button
-          className="absolute top-[50%] z-50 -translate-y-[50%] left-10 opacity-70 hover:opacity-100 transition ease-linear duration-150"
+          className="absolute top-[50%] z-40 -translate-y-[50%] left-10 opacity-70 hover:opacity-100 transition ease-linear duration-150"
           onClick={() => swiperRef.current?.slidePrev()}
         >
           <CgChevronLeftO size={25} />
         </button>
         <button
-          className="absolute top-[50%] z-50 -translate-y-[50%] right-10 opacity-70 hover:opacity-100 transition ease-linear duration-150"
+          className="absolute top-[50%] z-40 -translate-y-[50%] right-10 opacity-70 hover:opacity-100 transition ease-linear duration-150"
           onClick={() => swiperRef.current?.slideNext()}
         >
           <CgChevronRightO size={25} />
         </button>
       </div>
       <div className="max-w-6xl mx-auto xl:px-0 px-3 py-6">
-        <h5 className="text-xl font-semibold text-gray-800 pb-1">
+        <h5 className="text-xl font-semibold text-gray-800 pb-1 text-center sm:text-start">
           Recent Offer
         </h5>
-        <hr className=" border-gray-400 pb-1" />
         <Link
           to="/search?offer=true"
-          className="hover:underline text-sm font-semibold text-blue"
+          className="hover:underline text-sm font-semibold text-blue text-center sm:text-start block"
         >
           View More Offers...
         </Link>
-        <div className="  grid grid-cols-5 gap-5 place-items-center py-5">
+        <div className="  grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 lg:gap-5 gap-3 place-items-center py-5">
           {offerListings &&
             offerListings.length > 0 &&
             offerListings.map((listing) => (
               <ListingItem key={listing._id} listing={listing} />
             ))}
         </div>
-        <h5 className="text-xl font-semibold text-gray-800 pb-1">
+        <hr className=" border-gray-300 pb-1" />
+        <h5 className="text-xl font-semibold text-gray-800 pb-1 text-center sm:text-start">
           Apartment For Rent
         </h5>
-        <hr className=" border-gray-400 pb-1" />
         <Link
           to="/search?type=rent"
-          className="hover:underline text-sm font-semibold text-blue"
+          className="hover:underline text-sm font-semibold text-blue text-center sm:text-start block"
         >
           View More Appartment...
         </Link>
-        <div className="  grid grid-cols-5 gap-5 place-items-center py-5">
+        <div className="  grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 lg:gap-5 gap-3 place-items-center py-5">
           {rentListings &&
             rentListings.length > 0 &&
             rentListings.map((rent) => (
               <ListingItem key={rent._id} listing={rent} />
             ))}
         </div>
-        <h5 className="text-xl font-semibold text-gray-800 pb-1">
+        <hr className=" border-gray-300 pb-1" />
+        <h5 className="text-xl font-semibold text-gray-800 pb-1 text-center sm:text-start">
           Apartment For Sell
         </h5>
-        <hr className=" border-gray-400 pb-1" />
         <Link
           to="/search?type=sell"
-          className="hover:underline text-sm font-semibold text-blue"
+          className="hover:underline text-sm font-semibold text-blue text-center sm:text-start block"
         >
           View More Appartment...
         </Link>
-        <div className="  grid grid-cols-5 gap-5 place-items-center py-5">
+        <div className="  grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 lg:gap-5 gap-3 place-items-center py-5">
           {sellListings &&
             sellListings.length > 0 &&
             sellListings.map((sell) => (
