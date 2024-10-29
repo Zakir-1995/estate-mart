@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
-
+import dotenv from "dotenv";
+dotenv.config();
 export const getUsers = async (req, res) => {
   try {
     return res.status(200).json({

@@ -1,7 +1,8 @@
 import Listing from "../models/listing.model.js";
 import cloudinary from "../utils/cloudinary.js";
 import { errorHandler } from "../utils/error.js";
-
+import dotenv from "dotenv";
+dotenv.config();
 export const createListing = async (req, res, next) => {
   const { listingData } = req.body;
   const { images, ...rest } = listingData;

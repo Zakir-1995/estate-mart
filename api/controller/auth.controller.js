@@ -3,6 +3,8 @@ import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { errorHandler } from "../utils/error.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const Signup = async (req, res, next) => {
   const { username, email, password } = req.body;

@@ -1,9 +1,10 @@
 import { v2 as cloudinary } from "cloudinary";
-
+import dotenv from "dotenv";
+dotenv.config();
 cloudinary.config({
-  cloud_name: "dnbsmtmem",
-  api_key: "625823392984492",
-  api_secret: "T7KcKXjDA2my-6z8_cSDCwCk944",
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
 
 export default cloudinary;
