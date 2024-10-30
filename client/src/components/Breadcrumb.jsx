@@ -75,4 +75,4 @@ const Breadcrumb = ({ title, subtitle }) => {
   );
 };
 
-export default Breadcrumb
+export default Breadcrumb;
