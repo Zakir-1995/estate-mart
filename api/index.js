@@ -11,15 +11,13 @@ import path from "path";
 
 const app = express();
 const __dirname = path.resolve();
+
+
+
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 
-app.use(express.static(path.join(__dirname, "/client/dist")));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
-});
 
 // connect DB
 mongoose
@@ -30,17 +28,22 @@ mongoose
   .catch((err) => {
     console.log(err.message);
   });
-
-// routes
-app.use("/api/user", userRouter);
-app.use("/api/auth", authRouter);
-app.use("/api/listing", listingRouter);
-
-app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
-  const message = err.message || "internal server error";
-  return res.status(statusCode).json({
-    success: false,
+  
+  // routes
+  app.use("/api/user", userRouter);
+  app.use("/api/auth", authRouter);
+  app.use("/api/listing", listingRouter);
+  
+  app.use(express.static(path.join(__dirname, "/client/dist")));
+  
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+  });
+  app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const message = err.message || "internal server error";
+    return res.status(statusCode).json({
+      success: false,
     statusCode,
     message,
   });
