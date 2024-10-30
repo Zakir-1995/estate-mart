@@ -22,7 +22,6 @@ const Listing = () => {
   const [error, setError] = useState(false);
   const { id } = useParams();
   const swiperRef = useRef();
- 
   useEffect(() => {
     const getListing = async () => {
       try {
